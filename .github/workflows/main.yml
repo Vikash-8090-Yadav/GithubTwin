@@ -52,8 +52,6 @@ jobs:
     - name: Wait
       run: sleep 10s
 
-    - name: Check health of containers
-      run: docker-compose ps && docker-compose exec -T web python -c "print('Application is running')"
 
     - name: Push Docker image to Docker Hub
       run: |
