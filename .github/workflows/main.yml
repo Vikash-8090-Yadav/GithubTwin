@@ -46,7 +46,7 @@ jobs:
           - ARG2=value2
 
     - name: Start GraphSpace container and check health controller response
-      run: docker compose up -d
+      run: docker run -it -p 8000:800 ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
 
     - name: Show Running Containers
       run: docker ps
