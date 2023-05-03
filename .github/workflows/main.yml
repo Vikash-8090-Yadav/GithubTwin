@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  DOCKER_USERNAME: Vikash98Yadav
+  DOCKER_USERNAME: vikash98yadav
   DOCKER_PASSWORD: Vikash@17apr
   DOCKER_REPO: vikash98yadav
   IMAGE_TAG: latest
