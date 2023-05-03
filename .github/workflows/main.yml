@@ -1,29 +1,19 @@
-name: CI/CD Pipeline
+name: Docker Build, Run and Push
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
 env:
   DOCKER_USERNAME: vikash98yadav
   DOCKER_PASSWORD: Vikash@17apr
-  DOCKER_REPO: vikash98yadav
+  DOCKER_REPO: GitHubTwin
   IMAGE_TAG: latest
 
 jobs:
-  build-and-push:
+  build-run-push:
     runs-on: ubuntu-latest
-    permissions:
-      # required for all workflows
-      security-events: write
-
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
 
     steps:
     - name: Checkout code
@@ -35,16 +25,11 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ env.DOCKER_PASSWORD }}
 
-    - name: Build and tag Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: false
-        tags: ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
-        build-args: |
-          - ARG1=value1
-          - ARG2=value2
+    - name: Build Docker image
+      run: docker build -t ${env.DOCKER_REPO}/portfolio:${env.IMAGE_TAG} .
 
+    - name: Start GraphSpace container and check health controller response
+      run: docker run -d --name twin -p 8000:8000 ${env.DOCKER_REPO}/twin:${env.IMAGE_TAG}
 
     - name: Show Running Containers
       run: docker ps
@@ -52,11 +37,14 @@ jobs:
     - name: Wait
       run: sleep 10s
 
+    - name: Check health of container
+      run: docker exec -T githubtwin python -c "print('Application is running')"
 
     - name: Push Docker image to Docker Hub
       run: |
-        docker tag ${env.ECR_REPO}:${env.IMAGE_TAG} ${env.DOCKER_USERNAME}/${env.DOCKER_REPO}:${env.IMAGE_TAG}
         docker push ${env.DOCKER_USERNAME}/${env.DOCKER_REPO}:${env.IMAGE_TAG}
 
-    - name: Shut Down Docker Containers
-      run: docker-compose down
+    - name: Stop and remove container
+      run: |
+        docker stop graphsp-web
+        docker rm graphsp-web
