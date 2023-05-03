@@ -24,4 +24,4 @@ jobs:
       run: docker build . --file Dockerfile --tag vikash98yadav/githubtwin:$(date +%s)
       
     - name: Docker Push
-      run: docker push vikash98yadav/githubtwin
+      run: docker push vikash98yadav/githubtwin:$(date +%s)
