@@ -24,14 +24,21 @@ jobs:
       run: docker build . --file Dockerfile --tag vikash98yadav/githubtwin
       
     - name: Install kubectl
-      run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https gnupg2 curl
-          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-          echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-          sudo apt-get update
-          sudo apt-get install -y kubectl
+      uses: azure/setup-kubectl@v2.0
+      with:
+        version: 'v1.24.0' # default is latest stable
+      id: install
+      
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
 
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
     - name: Docker Push
       run: docker push vikash98yadav/githubtwin
 
