@@ -47,6 +47,5 @@ jobs:
     
     - name: Deploy to EKS
       run: |
-          kubectl rollout restart deployment {deployment.yaml}
           kubectl apply -f service.yaml
           kubectl get svc
