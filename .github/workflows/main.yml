@@ -43,9 +43,10 @@ jobs:
       run: docker push vikash98yadav/githubtwin
 
     - name: Update kube config
-      run: aws eks update-kubeconfig --name githubtwn
+      run: aws eks update-kubeconfig --name githubtw
     
     - name: Deploy to EKS
       run: |
           kubectl apply -f deployment.yaml
           kubectl apply -f service.yaml
+          kubectl get svc
