@@ -24,7 +24,7 @@ jobs:
       run: docker build . --file Dockerfile --tag vikash98yadav/githubtwin
       
     - name: Install kubectl
-        run: |
+      run: |
           sudo apt-get update
           sudo apt-get install -y apt-transport-https gnupg2 curl
           curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -38,6 +38,6 @@ jobs:
     - name: Update kube config
       run: aws eks update-kubeconfig --name githubtw
     - name: Deploy to EKS
-        run: |
+      run: |
           kubectl apply -f deployment.yaml
           kubect1 apply -f service.yaml
