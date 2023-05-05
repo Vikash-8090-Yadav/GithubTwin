@@ -17,5 +17,6 @@ spec:
       containers:
       - name: first
         image: vikash98yadav/githubtwin:latest
+        imagePullPolicy: "Always"
         ports:
         - containerPort: 8000
