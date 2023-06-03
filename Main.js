@@ -1,17 +1,26 @@
-require('dotenv').config();
-const apiKey = process.env.API_KEY;
 async function getFollowers() {
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
+let newKeyArray = [];
+let MixString1 = ["8bb0d", "f341b6", "789774", "60a28", "846541e"];
+let MixString= ["6pcms","AXA1yJ","B7WMt","bmrdK","qz5qp9","1x6i_","phg"]
+
+const obfuscatedKey = newKeyArray.join('');
+    
+    let sectOne = "19";
+    let secTwo = "bUHTk0h";
+    let sec = secTwo.split("").reverse().join("");
+    stepOne = MixString.join("").split("").reverse().join("");
+    stepTwo = stepOne.split(sectOne);
+    
+    stepThree = stepTwo [0] + stepTwo [1];
+    mix = stepThree + sec;
+    
     document.querySelector('.container1').style.display = 'flex';
-    // ="),2!==e.querySelectorAll(":enabled").length&&y.push(":enabled",":disabled"),a.appendChild(e).disabled=!0,2!==e.query
-    // SelectorAll(":disabled").length&&y.push(":enabled",":disabled"),e.querySelectorAll("*,:x"),y.push(",.*:")})),(d.matche
-    //     sSelector=K.test(c=a.matches||a.webkitMatchesSelector||a.mozMatchesSelector||a.oMatchesSelector||a.msMatchesSelect
-    //         or))&&ce(function(e){d.disconnectedMatch=c.call(e,"*"),c.call(e,"[s!='']:x"),s.push("!=",F)}),d.cssHas||y.push
-           
     const username = document.getElementById('username').value;
     const headers = {
     
-        'Authorization': `token ${process.env.API_KEY}`,
+        'Authorization':`token ${mix}`,
 
         'Accept': 'application/vnd.github+json'
     };
