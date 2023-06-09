@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: 278529849729
+  ECR_REPO: graphsp-web
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and tag Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: false
+        tags: ${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }}
+        build-args: |
+          - ARG1=value1
+          - ARG2=value2
+    - name: Start GraphSpace container and check health controller response
+      run:  docker compose up -d 
+
+    - name: Show Running Containers
+      run: docker ps
+
+    - name: Wait
+      run: sleep 10s
+
+    - name: Check health of containers
+      run: docker-compose ps && docker-compose exec -T web python -c "print('Application is running')"
+
+    - name: Push Docker image to Amazon ECR
+      run: |
+        docker tag ${ECR_REPO}:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+        docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+    - name: Shut Down Docker Containers
+      run: docker-compose down
